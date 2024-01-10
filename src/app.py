@@ -1,34 +1,31 @@
-from flask import Flask, request, render_template, send_from_directory
-import os
+from flask import Flask, request, render_template, jsonify
 import youtube_dl
 
 app = Flask(__name__)
 
-def descargar_video(url, carpeta_destino):
-    if not os.path.exists(carpeta_destino):
-        os.makedirs(carpeta_destino)
-
+def obtener_url_video(url):
     opciones = {
         'format': 'bestvideo+bestaudio/best',
-        'outtmpl': os.path.join(carpeta_destino, '%(title)s.%(ext)s'),
+        'quiet': True
     }
 
     with youtube_dl.YoutubeDL(opciones) as ydl:
-        ydl.download([url])
+        info = ydl.extract_info(url, download=False)
+        url_video = info['url']
+        return url_video
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/descargar', methods=['POST'])
-def descargar():
+@app.route('/obtener_url', methods=['POST'])
+def obtener_url():
     url_video = request.form['url']
-    carpeta_destino = 'descargas'
     try:
-        descargar_video(url_video, carpeta_destino)
-        return send_from_directory(directory=carpeta_destino, filename=os.listdir(carpeta_destino)[0], as_attachment=True)
+        url_directa = obtener_url_video(url_video)
+        return jsonify({'url_directa': url_directa})
     except Exception as e:
-        return f"Ocurrió un error: {e}"
+        return jsonify({'error': str(e)})
 
 if __name__ == "__main__":
     app.run(debug=True)
