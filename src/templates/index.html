@@ -3,13 +3,19 @@
 <head>
     <title>Descargar Video</title>
     <link rel="stylesheet" href="/static/styles.css">
-
 </head>
 <body>
-    <form action="/descargar" method="post">
-        <label for="url">URL del Vidio:</label>
-        <input type="text" id="url" name="url"><br><br>
-        <input type="submit" value="Descargar">
-    </form>
+    <div class="container">
+        <h1>Descargador de Videos</h1>
+        <form action="/descargar" method="post" class="download-form">
+            <div class="form-group">
+                <label for="url">URL del Video:</label>
+                <input type="text" id="url" name="url" placeholder="Ingrese la URL del video aquí">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Obtener URL" class="btn">
+            </div>
+        </form>
+    </div>
 </body>
 </html>
